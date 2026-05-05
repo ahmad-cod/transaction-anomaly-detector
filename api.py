@@ -10,6 +10,7 @@ Docs:
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 import pandas as pd
 import time
@@ -49,6 +50,14 @@ app = FastAPI(
     description="Accepts a transaction and returns a risk score + fraud decision.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
