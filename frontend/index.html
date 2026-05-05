@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FraudWatch — Risk Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('style.css');
+</style>
+</head>
+<body>
+<!-- Dashboard for Transactions Risk operations watch -->
+<div class="shell">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      FRAUDWATCH
+    </div>
+    <div class="topbar-mid">
+      <span class="live-badge">● LIVE</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text2)" id="streamStatus">Streaming transactions…</span>
+    </div>
+    <div class="topbar-right">
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text2)">API: <span style="color:var(--green)">localhost:8000</span></span>
+      <button class="stream-toggle" id="streamBtn" onclick="toggleStream()">⏸ Pause</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="left">
+
+      <!-- Metrics -->
+      <div class="metrics" id="metricsRow">
+        <div class="metric"><div class="metric-label">Total reviewed</div><div class="metric-val" id="mTotal">0</div><div class="metric-sub">since session start</div></div>
+        <div class="metric"><div class="metric-label">Flagged fraud</div><div class="metric-val red" id="mFraud">0</div><div class="metric-sub" id="mFraudPct">0% of total</div></div>
+        <div class="metric"><div class="metric-label">High risk</div><div class="metric-val red" id="mHigh">0</div><div class="metric-sub">score &gt; 0.6</div></div>
+        <div class="metric"><div class="metric-label">Medium risk</div><div class="metric-val amber" id="mMed">0</div><div class="metric-sub">score 0.35–0.6</div></div>
+        <div class="metric"><div class="metric-label">Avg score</div><div class="metric-val" id="mAvg">—</div><div class="metric-sub">all transactions</div></div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button class="filter-btn active-all" data-filter="ALL"  onclick="setFilter('ALL',this)">All</button>
+        <button class="filter-btn" data-filter="HIGH"   onclick="setFilter('HIGH',this)">High</button>
+        <button class="filter-btn" data-filter="MEDIUM" onclick="setFilter('MEDIUM',this)">Medium</button>
+        <button class="filter-btn" data-filter="LOW"    onclick="setFilter('LOW',this)">Low</button>
+        <button class="filter-btn" data-filter="FRAUD"  onclick="setFilter('FRAUD',this)">Fraud only</button>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchBox" placeholder="Search ID, amount, rules…" oninput="renderTable()">
+        </div>
+        <button class="sort-btn" onclick="cycleSort()">Sort: <span id="sortLabel">Score ↓</span></button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('id')">TXN ID</th>
+              <th onclick="sortBy('amount')">Amount</th>
+              <th onclick="sortBy('hour')">Time</th>
+              <th onclick="sortBy('score')">Risk Score</th>
+              <th onclick="sortBy('risk')">Level</th>
+              <th>Decision</th>
+              <th>Rules triggered</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="empty" id="emptyState" style="display:none">
+          <div style="font-size:24px">◈</div>
+          <div>No transactions match filter</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="right" id="rightPanel">
+      <div class="panel-empty" id="panelEmpty">
+        <div style="font-size:28px;opacity:.3">◉</div>
+        <div>Select a transaction</div>
+        <div style="color:var(--text2);font-size:10px;margin-top:4px">to view risk details</div>
+      </div>
+      <div class="panel-body" id="panelBody" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="main.js"></script>
+</body>
+</html>
