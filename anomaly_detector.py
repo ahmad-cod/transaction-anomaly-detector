@@ -61,7 +61,7 @@ def generate_synthetic_transactions(
         amounts        = np.round(rng.choice([
             rng.uniform(3000, 15000, n),   # large
             rng.uniform(0.01, 1.00, n),    # micro (testing card)
-        ], axis=0)[0], 2)
+        ], axis=0), 2)
         hours          = rng.choice([2, 3, 4, 23], n)            # late night
         days_since     = rng.integers(0, 5, n)
         freq_1h        = rng.integers(8, 30, n)                  # velocity spike
